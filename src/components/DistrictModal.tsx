@@ -39,7 +39,7 @@ export default function DistrictModal() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ type: "spring", damping: 26, stiffness: 260 }}
-            className={`relative w-full max-w-lg rounded-t-3xl border-t sm:rounded-3xl sm:border bg-dusk p-6 sm:p-8 ${accentBorder[district.accent]}`}
+            className={`relative w-full max-w-lg rounded-t-3xl border-t sm:rounded-3xl sm:border bg-dusk p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:p-8 ${accentBorder[district.accent]}`}
           >
             <button
               onClick={closeDistrict}
@@ -120,7 +120,7 @@ export default function DistrictModal() {
             )}
 
             {district.cta && (
-              <a
+              
                 href={district.cta.href}
                 className={`mt-6 inline-block rounded-full border px-6 py-2.5 font-display text-xs transition hover:bg-white/5 ${accentBorder[district.accent]} ${accentText[district.accent]}`}
               >
@@ -130,9 +130,9 @@ export default function DistrictModal() {
 
             <button
               onClick={closeDistrict}
-              className="mt-6 block w-full rounded-full border border-duskLight py-2.5 font-body text-xs text-mistDim transition hover:border-mist hover:text-mist sm:hidden"
+              className={`mt-6 block w-full rounded-full border py-3 font-display text-xs font-bold tracking-wide transition active:scale-[0.98] sm:hidden ${accentBorder[district.accent]} ${accentText[district.accent]} bg-white/5`}
             >
-              Back to the crossing
+              ← BACK TO THE CROSSING
             </button>
           </motion.div>
         </motion.div>
