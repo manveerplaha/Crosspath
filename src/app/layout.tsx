@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://manveerplar.com"),
+  metadataBase: new URL("https://manveerplaha.com"),
   title: "Manveer Plaha | CrossPath Portfolio",
   description:
     "An interactive portfolio exploring AI, robotics, software, and technology.",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Manveer Plaha | CrossPath Portfolio",
     description:
       "An interactive portfolio exploring AI, robotics, software, and technology.",
-    url: "https://manveerplar.com",
+    url: "https://manveerplaha.com",
     siteName: "Manveer Plaha",
     images: [
       {
