@@ -120,7 +120,7 @@ export default function DistrictModal() {
             )}
 
             {district.cta && (
-              
+              <a
                 href={district.cta.href}
                 className={`mt-6 inline-block rounded-full border px-6 py-2.5 font-display text-xs transition hover:bg-white/5 ${accentBorder[district.accent]} ${accentText[district.accent]}`}
               >
