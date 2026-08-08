@@ -2,8 +2,26 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CrossPath",
-  description: "An interactive, Crossy-Road-style portfolio — dodge traffic, unlock the story.",
+  metadataBase: new URL("https://manveerplar.com"),
+  title: "Manveer Plaha | CrossPath Portfolio",
+  description:
+    "An interactive portfolio exploring AI, robotics, software, and technology.",
+  openGraph: {
+    title: "Manveer Plaha | CrossPath Portfolio",
+    description:
+      "An interactive portfolio exploring AI, robotics, software, and technology.",
+    url: "https://manveerplar.com",
+    siteName: "Manveer Plaha",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Manveer Plaha Portfolio",
+      },
+    ],
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {
