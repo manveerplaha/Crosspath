@@ -15,7 +15,7 @@ export default function MobileControls() {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed inset-x-0 bottom-[calc(2rem+env(safe-area-inset-bottom))] z-30 mx-auto grid grid-cols-3 grid-rows-3 justify-center gap-1.5 sm:hidden"
+      className="fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 mx-auto grid grid-cols-3 grid-rows-3 justify-center gap-1.5 sm:hidden"
       style={{ justifySelf: "center" }}
     >
       <div />
