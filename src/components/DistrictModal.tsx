@@ -14,6 +14,11 @@ const accentBorder: Record<string, string> = {
   amber: "border-amber shadow-amber",
   magenta: "border-magenta",
 };
+const accentSolid: Record<string, string> = {
+  neon: "bg-neon shadow-neon",
+  amber: "bg-amber shadow-amber",
+  magenta: "bg-magenta",
+};
 
 export default function DistrictModal() {
   const activeId = useGameStore((s) => s.activeDistrict);
@@ -128,16 +133,18 @@ export default function DistrictModal() {
               </a>
             )}
 
-            <button
+            <motion.button
               onClick={closeDistrict}
-              className={`mt-6 block w-full rounded-full border py-3 font-display text-xs font-bold tracking-wide transition active:scale-[0.98] sm:hidden ${accentBorder[district.accent]} ${accentText[district.accent]} bg-white/5`}
+              whileTap={{ scale: 0.93 }}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              className={`mt-6 block w-full rounded-full py-3.5 font-display text-xs font-bold tracking-wide text-void shadow-lg sm:hidden ${accentSolid[district.accent]}`}
             >
               ← BACK TO THE CROSSING
-            </button>
+            </motion.button>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
-// rebuild trigger
