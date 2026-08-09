@@ -212,14 +212,17 @@ export class GameScene extends Phaser.Scene {
     const active: ActiveLane = { def, vehicles: [], spawnTimer: 0, staticObjects: [base] };
 
     if (def.type === "road") {
-      for (let i = -1; i < 5; i++) {
-        this.spawnVehicleInLane(active, y, i * (def.gapPx ?? 200));
-      }
-      // lane dividers
+      // Draw the lane-divider dashes BEFORE spawning vehicles — Phaser
+      // containers render children in insertion order, not by depth, so
+      // whatever gets added later draws on top. Cars must be added after
+      // the dashes so they visually pass over the road markings, not under them.
       for (let cx = -width / 2 + TILE / 2; cx < width / 2; cx += TILE) {
         const dash = this.add.rectangle(cx, y, TILE * 0.4, 3, COLORS.roadStripe, 0.6);
         this.worldContainer.add(dash);
         active.staticObjects.push(dash);
+      }
+      for (let i = -1; i < 5; i++) {
+        this.spawnVehicleInLane(active, y, i * (def.gapPx ?? 200));
       }
     }
 

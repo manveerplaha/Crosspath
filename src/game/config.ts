@@ -30,9 +30,9 @@ export const PLAYER = {
 };
 
 export const DIFFICULTY = {
-  baseVehicleSpeed: 58, // px/sec — a bit brisker, still reasonably reactable
-  speedRampPerRow: 0.55, // px/sec added per row of progress — noticeable but not brutal
-  maxSpeed: 160, // hard ceiling so late rows never become unfair
-  minGapPx: TILE * 3.0, // still generous gaps, just tighter than before
+  baseVehicleSpeed: 78, // px/sec — noticeably faster
+  speedRampPerRow: 0.7, // px/sec added per row of progress
+  maxSpeed: 190, // hard ceiling so late rows never become unfair
+  minGapPx: TILE * 3.0, // gaps unchanged — speed is the only lever here
   maxGapPx: TILE * 5.5,
 };
