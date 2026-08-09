@@ -50,7 +50,13 @@ export function generateLanes(): LaneDef[] {
 
     const direction: 1 | -1 = row % 4 === 1 ? 1 : -1;
     const rampedSpeed = DIFFICULTY.baseVehicleSpeed + row * DIFFICULTY.speedRampPerRow;
-    const speed = Math.min(rampedSpeed, DIFFICULTY.maxSpeed);
+    // Step increase per district: every district already crossed adds a
+    // flat multiplier on top of the gradual per-row ramp, so traffic gets
+    // a noticeable jump right after each district rather than only easing
+    // up smoothly.
+    const districtsPassed = DISTRICTS.filter((d) => d.row < row).length;
+    const districtMultiplier = 1 + districtsPassed * DIFFICULTY.speedBoostPerDistrict;
+    const speed = Math.min(rampedSpeed * districtMultiplier, DIFFICULTY.maxSpeed);
     const colorIdx = Math.floor(seeded(row, 3) * COLORS.vehicleBody.length);
 
     lanes.push({

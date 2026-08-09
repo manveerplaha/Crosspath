@@ -13,11 +13,14 @@ const BOOT_LINES = [
   "READY.",
 ];
 
+const TITLE_TEXT = "I am Manveer";
+
 export default function LoadingScreen() {
   const phase = useGameStore((s) => s.phase);
   const setPhase = useGameStore((s) => s.setPhase);
   const [progress, setProgress] = useState(0);
   const [lineIdx, setLineIdx] = useState(0);
+  const [typedTitle, setTypedTitle] = useState("");
   const barRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
 
@@ -46,12 +49,15 @@ export default function LoadingScreen() {
   }, [phase, setPhase]);
 
   useEffect(() => {
-    if (phase !== "menu" || !titleRef.current) return;
-    gsap.fromTo(
-      titleRef.current.children,
-      { y: 24, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: "back.out(1.7)" }
-    );
+    if (phase !== "menu") return;
+    setTypedTitle("");
+    let i = 0;
+    const interval = setInterval(() => {
+      i += 1;
+      setTypedTitle(TITLE_TEXT.slice(0, i));
+      if (i >= TITLE_TEXT.length) clearInterval(interval);
+    }, 85);
+    return () => clearInterval(interval);
   }, [phase]);
 
   if (phase !== "loading" && phase !== "menu") return null;
@@ -89,11 +95,11 @@ export default function LoadingScreen() {
           >
             <div ref={titleRef}>
               <h1 className="font-display text-2xl leading-relaxed text-mist sm:text-4xl">
-                CROSS<span className="text-neon">PATH</span>
+                {typedTitle}
+                <span className="ml-1 inline-block h-[1em] w-[3px] translate-y-1 animate-pulse bg-neon align-middle" />
               </h1>
               <p className="mx-auto mt-4 max-w-md font-body text-sm text-mistDim sm:text-base">
-                Nine districts. One crossing. Dodge the traffic to unlock the story — About, Education, Skills, AI &amp; Robotics
-                projects, Nexus-0x, Celesta, Achievements, and Contact.
+                An interactive portfolio — cross nine districts to explore the work.
               </p>
             </div>
 

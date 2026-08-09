@@ -30,9 +30,10 @@ export const PLAYER = {
 };
 
 export const DIFFICULTY = {
-  baseVehicleSpeed: 78, // px/sec — noticeably faster
-  speedRampPerRow: 0.7, // px/sec added per row of progress
-  maxSpeed: 190, // hard ceiling so late rows never become unfair
-  minGapPx: TILE * 3.0, // gaps unchanged — speed is the only lever here
+  baseVehicleSpeed: 90, // px/sec — noticeably brisker again
+  speedRampPerRow: 0.85, // px/sec added per row of progress
+  speedBoostPerDistrict: 0.1, // +10% multiplier stacked for every district already crossed
+  maxSpeed: 230, // hard ceiling so late rows never become unfair
+  minGapPx: TILE * 3.0,
   maxGapPx: TILE * 5.5,
 };
