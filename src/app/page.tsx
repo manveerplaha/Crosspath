@@ -30,7 +30,7 @@ export default function Home() {
       <LoadingScreen />
 
       {showGame && (
-        <div className="relative mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-start pt-6 px-3 pb-6 sm:justify-center sm:pt-6">
+        <div className="relative mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-start pt-[calc(2rem+env(safe-area-inset-top))] px-3 pb-6 sm:justify-center sm:pt-6">
           <GameRoot />
         </div>
       )}
