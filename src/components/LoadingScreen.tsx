@@ -75,7 +75,7 @@ export default function LoadingScreen() {
             transition={{ duration: 0.4 }}
             className="relative z-10 flex w-[min(90vw,420px)] flex-col items-center gap-6 text-center"
           >
-            <p className="font-display text-xs tracking-[0.3em] text-neon">CROSSPATH</p>
+            <p className="font-display text-xs tracking-[0.3em] text-neon">I AM MANVEER</p>
             <div className="h-2 w-full overflow-hidden rounded-full border border-duskLight bg-dusk">
               <div ref={barRef} className="h-full w-full bg-gradient-to-r from-neon via-amber to-magenta" />
             </div>
