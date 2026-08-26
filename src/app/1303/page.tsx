@@ -57,6 +57,18 @@ const colorClasses = {
   magenta: "border-magenta bg-magenta shadow-[0_0_12px_rgba(255,92,138,0.55),0_0_40px_rgba(255,92,138,0.2)] text-magenta",
 } as const;
 
+const favourites = [
+  { label: "FILMS", value: "Interstellar · Iron Man · Spider-Verse · The Dark Knight · Oppenheimer · The Odyssey" },
+  { label: "DIRECTOR", value: "Christopher Nolan" },
+  { label: "BOOKS", value: "Julius Caesar · The Psychology of Money · Homer’s Odyssey" },
+  { label: "ON REPEAT", value: "Stellar Fission · Oppenheimer X · Never Gonna Give You Up · traditional songs" },
+  { label: "THE COLOUR", value: "Blue, always finding its way in." },
+  { label: "COMFORT", value: "Whatever is made at home." },
+  { label: "NEXT HORIZON", value: "A big trek through the mountains of Switzerland." },
+  { label: "A PLACE KEPT", value: "Himachal - mountains that already feel familiar." },
+  { label: "CURRENT OBSESSION", value: "My guitalele. It is usually in my hands, even while studying." },
+] as const;
+
 export default function SignalRoomPage() {
   const [activeId, setActiveId] = useState("now");
   const activeSignal = signals.find((signal) => signal.id === activeId) ?? signals[0]!;
@@ -117,6 +129,34 @@ export default function SignalRoomPage() {
             </div>
           </aside>
         </div>
+
+        <section className="border-t border-duskLight/70 py-8 sm:py-10" aria-labelledby="favourites-heading">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <p className="font-display text-[9px] tracking-[0.28em] text-amber">05 / FAVOURITES CABINET</p>
+              <h2 id="favourites-heading" className="mt-3 font-body text-3xl font-medium text-mist sm:text-4xl">Small things worth keeping.</h2>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-mistDim">Not a list of best answers. Just a few coordinates.</p>
+          </div>
+
+          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {favourites.map((favourite, index) => (
+              <article key={favourite.label} className="group rounded-2xl border border-duskLight bg-dusk/30 p-5 transition hover:-translate-y-1 hover:border-mistDim hover:bg-dusk/55">
+                <p className="font-display text-[8px] tracking-[0.18em] text-neon">0{index + 1} / {favourite.label}</p>
+                <p className="mt-4 text-base leading-relaxed text-mist">{favourite.value}</p>
+              </article>
+            ))}
+
+            <article className="rounded-2xl border border-magenta/40 bg-magenta/5 p-5 sm:col-span-2 lg:col-span-1">
+              <p className="font-display text-[8px] tracking-[0.18em] text-magenta">LINES TO KEEP</p>
+              <div className="mt-4 space-y-3 text-sm leading-relaxed text-mist">
+                <blockquote>“More than strangers, less than lovers, just two hearts taking care for each other.”</blockquote>
+                <blockquote>“History is a set of lies agreed upon.”</blockquote>
+                <blockquote>“And now I have Death - the destroyer of worlds.”</blockquote>
+              </div>
+            </article>
+          </div>
+        </section>
 
         <footer className="flex items-center justify-between border-t border-duskLight/70 pt-5 font-display text-[8px] tracking-[0.16em] text-mistDim">
           <span>YOU FOUND IT.</span>
