@@ -4,7 +4,7 @@ import { get, put } from "@vercel/blob";
 const ROOM3_PATH = "vault-data/notes-room-3.json";
 
 export async function GET() {
-  const blob = await get(ROOM3_PATH, { access: "public" });
+  const blob = await get(ROOM3_PATH, { access: "private" });
 
   if (!blob) {
     return NextResponse.json({ data: null });
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       ciphertext: String(body.ciphertext),
     }),
     {
-      access: "public",
+      access: "private",
       contentType: "application/json",
       addRandomSuffix: false,
       allowOverwrite: true,

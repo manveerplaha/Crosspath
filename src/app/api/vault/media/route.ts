@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     `${MEDIA_PREFIX}${id}.bin`,
     bytes,
     {
-      access: "public",
+      access: "private",
       contentType: "application/octet-stream",
       addRandomSuffix: false,
     }
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
     `${MEDIA_PREFIX}${id}.json`,
     JSON.stringify(entry),
     {
-      access: "public",
+      access: "private",
       contentType: "application/json",
       addRandomSuffix: false,
     }
