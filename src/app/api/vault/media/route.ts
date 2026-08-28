@@ -46,7 +46,29 @@ async function getManifest(): Promise<MediaEntry[]> {
   return items.sort((a, b) => b.createdAt - a.createdAt);
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id");
+
+  if (id) {
+    const result = await get(`${MEDIA_PREFIX}${id}.bin`, {
+      access: "private",
+    });
+
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return NextResponse.json(
+        { error: "Media not found" },
+        { status: 404 }
+      );
+    }
+
+    return new NextResponse(result.stream, {
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
   const items = await getManifest();
 
   return NextResponse.json({ items });

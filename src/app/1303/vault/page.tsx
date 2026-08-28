@@ -199,7 +199,8 @@ function MediaRoom({ passphrase, onLock }: { passphrase: string; onLock: () => v
       const decrypted = await Promise.all(
         manifest.map(async (entry) => {
           try {
-            const fileRes = await fetch(entry.url);
+            const fileRes = await fetch(`/api/vault/media?id=${encodeURIComponent(entry.id)}`);
+            if (!fileRes.ok) throw new Error("Failed to load media");
             const cipherBuf = await fileRes.arrayBuffer();
             const plainBuf = await decryptBytes(passphrase, entry.salt, entry.iv, cipherBuf);
             const blob = new Blob([plainBuf], { type: entry.contentType });
