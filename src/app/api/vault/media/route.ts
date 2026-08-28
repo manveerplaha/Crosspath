@@ -27,11 +27,16 @@ async function getManifest(): Promise<MediaEntry[]> {
 
   for (const blob of manifestBlobs) {
     try {
-      const response = await fetch(blob.url);
+      const result = await get(blob.pathname, {
+        access: "private",
+      });
 
-      if (!response.ok) continue;
+      if (!result || result.statusCode !== 200 || !result.stream) {
+        continue;
+      }
 
-      const entry = await response.json() as MediaEntry;
+      const text = await new Response(result.stream).text();
+      const entry = JSON.parse(text) as MediaEntry;
       items.push(entry);
     } catch {
       // Ignore malformed metadata files.
