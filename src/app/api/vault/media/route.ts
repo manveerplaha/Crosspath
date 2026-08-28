@@ -16,7 +16,7 @@ const MEDIA_PREFIX = "vault-media/";
 async function getManifest(): Promise<MediaEntry[]> {
   const { blobs } = await list({
     prefix: MEDIA_PREFIX,
-    limit: 1000,
+    limit: 100,
   });
 
   const manifestBlobs = blobs.filter((blob) =>
