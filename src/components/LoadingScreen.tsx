@@ -113,11 +113,14 @@ export default function LoadingScreen() {
     CHOOSE YOUR RIDE
   </p>
 
-  <div className="flex gap-4">
+  <div className="grid grid-cols-3 gap-3">
     {[
-      { id: "cyan", color: "#4cf3d6", label: "CYAN" },
-      { id: "orange", color: "#ff8a4c", label: "ORANGE" },
-      { id: "pink", color: "#ff4f7b", label: "PINK" },
+  { id: "cyan", color: "#4cf3d6", label: "CYAN" },
+  { id: "orange", color: "#ff8a4c", label: "ORANGE" },
+  { id: "pink", color: "#ff4f7b", label: "PINK" },
+  { id: "purple", color: "#8b7cff", label: "PURPLE" },
+  { id: "lime", color: "#9eea5a", label: "LIME" },
+  { id: "gold", color: "#f5c451", label: "GOLD" },
     ].map((option) => {
       const selected = selectedVehicleColor === option.id;
 
