@@ -37,6 +37,11 @@ const PLAYER_COLORS: Record<
     stroke: 0xffe29a,
     visorStroke: 0xffd36b,
   },
+  crimson: {
+  body: 0xdc143c,
+  stroke: 0xff6b81,
+  visorStroke: 0xff8fa3,
+},
 };
 
 /**
