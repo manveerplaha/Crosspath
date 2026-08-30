@@ -130,8 +130,8 @@ export default function LoadingScreen() {
           type="button"
           onClick={() =>
             selectVehicleColor(
-              option.id as "cyan" | "orange" | "pink"
-            )
+                option.id as "cyan" | "orange" | "pink" | "purple" | "lime" | "gold"
+              )
           }
           className={`flex flex-col items-center gap-2 rounded-xl border px-4 py-3 transition ${
             selected
