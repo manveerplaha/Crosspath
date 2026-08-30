@@ -332,9 +332,11 @@ active.staticObjects.push(topEdge, bottomEdge);
 
     if (def.type === "district" && def.district) {
   const accent =
-    def.district.accent === "neon"
-      ? COLORS.buildingGlowNeon
-      : def.district.accent;
+  def.district.accent === "neon"
+    ? COLORS.buildingGlowNeon
+    : def.district.accent === "amber"
+      ? 0xf5a623
+      : 0xff4fd8;
 
   const bx = colToX(4);
 
@@ -357,7 +359,7 @@ active.staticObjects.push(topEdge, bottomEdge);
       y - TILE * 0.62,
       TILE * 1.35,
       TILE * 1.85,
-      COLORS.buildingLowNeon,
+      COLORS.buildingGlowNeon,
       0.95
     )
     .setOrigin(0.5);
