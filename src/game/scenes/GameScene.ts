@@ -121,7 +121,7 @@ export class GameScene extends Phaser.Scene {
       this.onLanded(gridRow);
     });
 
-    this.cameraTargetY = Math.max(this.cameraTargetY, rowToY(gridRow));
+    this.cameraTargetY = Math.max(this.cameraTargetY, gridRow * TILE);
   }
 
   private onLanded(row: number) {
@@ -178,7 +178,7 @@ export class GameScene extends Phaser.Scene {
     // returns, so there's no chance of a stale window making it look like the
     // map won't continue until something else (like a crash) forces a refresh.
     this.ensureLanesAround(this.player.gridRow);
-    this.cameraTargetY = rowToY(this.player.gridRow);
+    this.cameraTargetY = this.player.gridRow * TILE;
   }
 
   // ------------------------------------------------------------ lane mgmt
@@ -306,7 +306,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     // Smooth camera follow toward the player's furthest row reached.
-    const desiredContainerY = this.scale.height - TILE * 1.5 - this.cameraTargetY;
+    const desiredContainerY = this.scale.height - TILE * 1.5 + this.cameraTargetY;
     this.worldContainer.y = Phaser.Math.Linear(this.worldContainer.y, desiredContainerY, Math.min(1, delta / 180));
 
     this.checkCollision();
@@ -346,7 +346,7 @@ export class GameScene extends Phaser.Scene {
       this.player.gridRow = row;
       this.player.gridCol = Math.floor(COLS / 2);
       this.player.setPosition(colToX(this.player.gridCol), rowToY(row));
-      this.cameraTargetY = rowToY(row);
+      this.cameraTargetY = row * TILE;
       this.ensureLanesAround(row);
       this.inputLocked = false;
     });
