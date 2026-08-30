@@ -76,10 +76,10 @@ export default function PhaserGame() {
   }, [muted]);
 
   return (
-    <div
-      ref={containerRef}
-      id="phaser-root"
-      className="mx-auto aspect-[9/9] w-full max-w-[576px] overflow-hidden rounded-2xl border border-duskLight shadow-neon [&>canvas]:h-full [&>canvas]:w-full"
-    />
-  );
+  <div
+    ref={containerRef}
+    id="phaser-root"
+    className="mx-auto aspect-square h-[82vh] max-h-[820px] w-auto max-w-[95vw] overflow-hidden rounded-2xl border border-duskLight shadow-neon"
+  />
+);
 }

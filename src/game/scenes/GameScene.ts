@@ -203,55 +203,283 @@ export class GameScene extends Phaser.Scene {
     const width = COLS * TILE;
 
     const base =
-      def.type === "road"
-        ? this.add.rectangle(0, y, width, TILE, COLORS.road)
-        : this.add.rectangle(0, y, width, TILE, row % 6 === 0 ? COLORS.safeAlt : COLORS.safe);
+  def.type === "road"
+    ? this.add.rectangle(0, y, width, TILE, COLORS.road)
+    : def.type === "district"
+      ? this.add.rectangle(
+          0,
+          y,
+          width,
+          TILE,
+          COLORS.buildingDark
+        )
+      : this.add.rectangle(
+          0,
+          y,
+          width,
+          TILE,
+          row % 6 === 0 ? COLORS.safeAlt : COLORS.safe
+        );
     base.setStrokeStyle(1, 0x05070f, 0.4);
     this.worldContainer.add(base);
+    // Safe lane decorative grid pattern
+if (def.type === "safe") {
+  const gridSpacing = TILE;
 
+  for (let x = 0; x < width; x += gridSpacing) {
+    const line = this.add.rectangle(
+      x,
+      y,
+      1,
+      TILE,
+      COLORS.safeGrid,
+      0.22
+    );
+
+    this.worldContainer.add(line);
+  }
+
+  // Subtle horizontal highlight
+  const highlight = this.add.rectangle(
+    0,
+    y + TILE * 0.08,
+    width,
+    1,
+    COLORS.safeGrid,
+    0.35
+  );
+
+  this.worldContainer.add(highlight);
+}
     const active: ActiveLane = { def, vehicles: [], spawnTimer: 0, staticObjects: [base] };
 
     if (def.type === "road") {
-      // Draw the lane-divider dashes BEFORE spawning vehicles — Phaser
-      // containers render children in insertion order, not by depth, so
-      // whatever gets added later draws on top. Cars must be added after
-      // the dashes so they visually pass over the road markings, not under them.
-      for (let cx = -width / 2 + TILE / 2; cx < width / 2; cx += TILE) {
-        const dash = this.add.rectangle(cx, y, TILE * 0.4, 3, COLORS.roadStripe, 0.6);
-        this.worldContainer.add(dash);
-        active.staticObjects.push(dash);
-      }
-      for (let i = -1; i < 5; i++) {
-        this.spawnVehicleInLane(active, y, i * (def.gapPx ?? 200));
-      }
-    }
+  // Road lane divider dashes
+  for (
+    let cx = -width / 2 + TILE / 2;
+    cx < width / 2;
+    cx += TILE
+  ) {
+    const dash = this.add.rectangle(
+      cx,
+      y,
+      TILE * 0.42,
+      TILE * 0.055,
+      COLORS.roadStripe,
+      0.75
+    );
+
+    this.worldContainer.add(dash);
+    active.staticObjects.push(dash);
+
+    // Subtle glowing road edge lines
+const topEdge = this.add.rectangle(
+  0,
+  y - TILE / 2,
+  width,
+  TILE * 0.035,
+  COLORS.roadStripe,
+  0.35
+);
+
+const bottomEdge = this.add.rectangle(
+  0,
+  y + TILE / 2,
+  width,
+  TILE * 0.035,
+  COLORS.roadStripe,
+  0.35
+);
+
+this.worldContainer.add([topEdge, bottomEdge]);
+active.staticObjects.push(topEdge, bottomEdge);
+  }
+
+  // Subtle glowing road edge lines
+  const topEdge = this.add.rectangle(
+    0,
+    y - TILE * 0.42,
+    width,
+    TILE * 0.035,
+    COLORS.roadStripe,
+    0.35
+  );
+
+  const bottomEdge = this.add.rectangle(
+    0,
+    y + TILE * 0.42,
+    width,
+    TILE * 0.035,
+    COLORS.roadStripe,
+    0.35
+  );
+
+  this.worldContainer.add([topEdge, bottomEdge]);
+  active.staticObjects.push(topEdge, bottomEdge);
+
+  this.tweens.add({
+    targets: [topEdge, bottomEdge],
+    alpha: 0.65,
+    duration: 1200,
+    yoyo: true,
+    repeat: -1,
+  });
+
+  for (let i = -1; i < 5; i++) {
+    this.spawnVehicleInLane(active, y, i * (def.gapPx ?? 200));
+  }
+}
 
     if (def.type === "district" && def.district) {
-      const glowColor =
-        def.district.accent === "neon" ? COLORS.buildingGlowNeon : def.district.accent === "amber" ? COLORS.buildingGlowAmber : COLORS.buildingGlowMagenta;
-      const bx = colToX(4);
-      const glow = this.add.rectangle(bx, y - TILE * 0.1, TILE * 1.6, TILE * 2.4, glowColor, 0.18);
-      const building = this.add.rectangle(bx, y - TILE * 0.6, TILE * 1.2, TILE * 1.8, COLORS.building).setStrokeStyle(2, glowColor);
-      const label = this.add
-        .text(bx, y - TILE * 1.55, def.district.title.toUpperCase(), {
-          fontFamily: "monospace",
-          fontSize: "11px",
-          color: "#0b1020",
-          backgroundColor: Phaser.Display.Color.IntegerToColor(glowColor).rgba,
-          padding: { x: 6, y: 3 },
-        })
+  const accent =
+    def.district.accent === "neon"
+      ? COLORS.buildingGlowNeon
+      : def.district.accent;
+
+  const bx = colToX(4);
+
+  // Large atmospheric glow behind the district
+  const glow = this.add
+    .rectangle(
+      bx,
+      y - TILE * 0.1,
+      TILE * 1.8,
+      TILE * 2.7,
+      accent,
+      0.14
+    )
+    .setOrigin(0.5);
+
+  // Main building
+  const building = this.add
+    .rectangle(
+      bx,
+      y - TILE * 0.62,
+      TILE * 1.35,
+      TILE * 1.85,
+      COLORS.buildingLowNeon,
+      0.95
+    )
+    .setOrigin(0.5);
+
+  building.setStrokeStyle(2, accent, 0.8);
+
+  // Building roof / top accent
+  const roof = this.add
+    .rectangle(
+      bx,
+      y - TILE * 1.55,
+      TILE * 1.5,
+      TILE * 0.16,
+      accent,
+      0.9
+    )
+    .setOrigin(0.5);
+
+  // Neon windows
+  const windows: Phaser.GameObjects.Rectangle[] = [];
+
+  for (let wx = -0.38; wx <= 0.38; wx += 0.38) {
+    for (let wy = -1.05; wy <= -0.35; wy += 0.35) {
+      const window = this.add
+        .rectangle(
+          bx + TILE * wx,
+          y + TILE * wy,
+          TILE * 0.18,
+          TILE * 0.12,
+          accent,
+          0.75
+        )
         .setOrigin(0.5);
-      this.tweens.add({ targets: glow, alpha: 0.35, duration: 1400, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-      this.worldContainer.add([glow, building, label]);
-      active.staticObjects.push(glow, building, label);
-      active.buildingGlow = glow;
+
+      windows.push(window);
     }
+  }
+
+  const label = this.add
+    .text(bx, y - TILE * 1.85, def.district.title.toUpperCase(), {
+      fontFamily: "monospace",
+      fontSize: "11px",
+      color: "#b0b020",
+      backgroundColor: Phaser.Display.Color.IntegerToColor(accent).rgba,
+      padding: { x: 7, y: 4 },
+    })
+    .setOrigin(0.5);
+
+  // Premium neon animation
+  this.tweens.add({
+    targets: glow,
+    alpha: 0.32,
+    duration: 1400,
+    yoyo: true,
+    repeat: -1,
+  });
+
+  this.tweens.add({
+    targets: windows,
+    alpha: 0.35,
+    duration: 900,
+    yoyo: true,
+    repeat: -1,
+    delay: 150,
+  });
+
+  this.worldContainer.add([
+    glow,
+    building,
+    roof,
+    ...windows,
+    label,
+  ]);
+
+  active.staticObjects.push(
+    glow,
+    building,
+    roof,
+    ...windows,
+    label
+  );
+
+  active.buildingGlow = glow;
+}
 
     if (def.coinCol !== undefined) {
-      const coin = this.add.circle(colToX(def.coinCol), y - 4, TILE * 0.14, COLORS.coin).setStrokeStyle(2, 0x8a6a12);
+      const coinGlow = this.add.circle(
+  colToX(def.coinCol),
+  y - 4,
+  TILE * 0.22,
+  COLORS.coin,
+  0.18
+);
+
+const coin = this.add.circle(
+  colToX(def.coinCol),
+  y - 4,
+  TILE * 0.14,
+  COLORS.coin
+);
+
+coin.setStrokeStyle(2, 0xfff3a0, 0.9);
+const coinShine = this.add.circle(
+  colToX(def.coinCol) - TILE * 0.04,
+  y - 4 - TILE * 0.04,
+  TILE * 0.045,
+  0xffffff,
+  0.75
+);
       this.tweens.add({ targets: coin, y: coin.y - 6, duration: 700, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-      this.worldContainer.add(coin);
-      active.staticObjects.push(coin);
+      this.tweens.add({
+  targets: coinGlow,
+  alpha: { from: 0.08, to: 0.28 },
+  scale: { from: 0.9, to: 1.15 },
+  duration: 700,
+  yoyo: true,
+  repeat: -1,
+  ease: "Sine.easeInOut"
+});
+      this.worldContainer.add([coinGlow, coin, coinShine]);
+
+      active.staticObjects.push(coinGlow, coin, coinShine);
       active.coinSprite = coin;
     }
 

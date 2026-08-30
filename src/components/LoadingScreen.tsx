@@ -18,6 +18,8 @@ const TITLE_TEXT = "I am Manveer";
 export default function LoadingScreen() {
   const phase = useGameStore((s) => s.phase);
   const setPhase = useGameStore((s) => s.setPhase);
+  const selectedVehicleColor = useGameStore((s) => s.selectedVehicleColor);
+  const selectVehicleColor = useGameStore((s) => s.selectVehicleColor);
   const [progress, setProgress] = useState(0);
   const [lineIdx, setLineIdx] = useState(0);
   const [typedTitle, setTypedTitle] = useState("");
@@ -105,6 +107,48 @@ export default function LoadingScreen() {
                 An interactive portfolio — cross nine districts to explore the work.
               </p>
             </div>
+
+            <div className="flex flex-col items-center gap-3">
+  <p className="font-display text-[11px] tracking-[0.2em] text-mistDim">
+    CHOOSE YOUR RIDE
+  </p>
+
+  <div className="flex gap-4">
+    {[
+      { id: "cyan", color: "#4cf3d6", label: "CYAN" },
+      { id: "orange", color: "#ff8a4c", label: "ORANGE" },
+      { id: "pink", color: "#ff4f7b", label: "PINK" },
+    ].map((option) => {
+      const selected = selectedVehicleColor === option.id;
+
+      return (
+        <button
+          key={option.id}
+          type="button"
+          onClick={() =>
+            selectVehicleColor(
+              option.id as "cyan" | "orange" | "pink"
+            )
+          }
+          className={`flex flex-col items-center gap-2 rounded-xl border px-4 py-3 transition ${
+            selected
+              ? "border-neon bg-neon/10 shadow-neon"
+              : "border-duskLight bg-dusk/40 hover:border-mistDim"
+          }`}
+        >
+          <div
+            className="h-8 w-10 rounded-md border-2 border-white/30"
+            style={{ backgroundColor: option.color }}
+          />
+
+          <span className="font-mono text-[9px] tracking-wider text-mistDim">
+            {option.label}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
 
             <motion.button
               whileHover={{ scale: 1.04 }}

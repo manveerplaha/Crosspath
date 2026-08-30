@@ -4,20 +4,38 @@ export const COLS = 9; // playable width in tiles (odd, so there's a center colu
 export const TOTAL_ROWS = 60; // full crossing length; districts sit within this range
 
 export const COLORS = {
-  bgTop: 0x0b1020,
-  bgBottom: 0x141b34,
-  safe: 0x1e2748,
-  safeAlt: 0x232d54,
-  road: 0x11172c,
-  roadStripe: 0x2a355f,
-  building: 0x2a355f,
+  bgTop: 0x070b18,
+  bgBottom: 0x151c36,
+
+  safe: 0x17223d,
+  safeAlt: 0x1d2a4a,
+  safeGrid: 0x31456f,
+
+  road: 0x0b1020,
+  roadEdge: 0x263455,
+  roadStripe: 0x52678f,
+
+  building: 0x202d4b,
+  buildingDark: 0x111a30,
+  buildingWindow: 0x6d8fc7,
+
   buildingGlowNeon: 0x4cf3d6,
   buildingGlowAmber: 0xffb13c,
   buildingGlowMagenta: 0xff5c8a,
+
   player: 0x4cf3d6,
   playerShadow: 0x05070f,
+
   coin: 0xffd166,
-  vehicleBody: [0xff5c8a, 0xffb13c, 0x8a7dff, 0x4cf3d6, 0xff8552],
+  coinGlow: 0xffd166,
+
+  vehicleBody: [
+    0xff5c8a,
+    0xffb13c,
+    0x8a7dff,
+    0x4cf3d6,
+    0xff8552,
+  ],
 } as const;
 
 // A guaranteed-defined fallback, since noUncheckedIndexedAccess makes
@@ -25,15 +43,16 @@ export const COLORS = {
 export const DEFAULT_VEHICLE_COLOR: number = COLORS.vehicleBody[0];
 
 export const PLAYER = {
-  hopDuration: 130, // ms per grid hop
-  hitRadius: 0.26, // fraction of a tile — smaller = more forgiving collisions
+  hopDuration: 130,
+  hitRadius: 0.25,
 };
 
 export const DIFFICULTY = {
-  baseVehicleSpeed: 90, // px/sec — noticeably brisker again
-  speedRampPerRow: 0.85, // px/sec added per row of progress
-  speedBoostPerDistrict: 0.1, // +10% multiplier stacked for every district already crossed
-  maxSpeed: 230, // hard ceiling so late rows never become unfair
-  minGapPx: TILE * 3.0,
-  maxGapPx: TILE * 5.5,
+  baseVehicleSpeed: 84,
+  speedRampPerRow: 0.72,
+  speedBoostPerDistrict: 0.085,
+  maxSpeed: 215,
+
+  minGapPx: TILE * 3.4,
+  maxGapPx: TILE * 5.4,
 };

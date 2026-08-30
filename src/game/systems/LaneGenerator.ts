@@ -29,45 +29,111 @@ function seeded(row: number, salt: number) {
 export function generateLanes(): LaneDef[] {
   const lanes: LaneDef[] = [{ row: 0, type: "safe" }];
 
+  let consecutiveRoads = 0;
+
   for (let row = 1; row <= TOTAL_ROWS; row++) {
     const district = districtByRow.get(row);
+
+    // District rows always take priority and act as a natural checkpoint.
     if (district) {
-      lanes.push({ row, type: "district", district, coinCol: 4 });
+      lanes.push({
+        row,
+        type: "district",
+        district,
+        coinCol: 4,
+      });
+
+      consecutiveRoads = 0;
       continue;
     }
 
-    // Strict alternation: even rows are always safe, odd rows are always
-    // road. That means a player never has to cross two road lanes back to
-    // back — one lane of traffic, then a guaranteed breather, every time.
-    if (row % 2 === 0) {
+    // ------------------------------------------------------------
+    // Progressive road difficulty
+    //
+    // Early:  1 road → safe
+    // Mid:    2 roads → safe
+    // Late:   3 roads → safe
+    // End:    up to 4 roads → safe
+    // ------------------------------------------------------------
+
+    let maxRoadsBeforeSafe: number;
+
+    if (row < 12) {
+  // Tutorial / easy start
+  maxRoadsBeforeSafe = 1;
+} else if (row < 28) {
+  // First real difficulty increase
+  maxRoadsBeforeSafe = 2;
+} else if (row < 46) {
+  // Challenging middle game
+  maxRoadsBeforeSafe = 2;
+} else {
+  // Late game: challenging, but still fair
+  maxRoadsBeforeSafe = 3;
+}
+
+    // Force a safe/rest lane after the allowed road streak.
+    if (consecutiveRoads >= maxRoadsBeforeSafe) {
       lanes.push({
         row,
         type: "safe",
-        coinCol: seeded(row, 1) > 0.5 ? Math.floor(seeded(row, 2) * 9) : undefined,
+        coinCol:
+          seeded(row, 1) > 0.5
+            ? Math.floor(seeded(row, 2) * 9)
+            : undefined,
       });
+
+      consecutiveRoads = 0;
       continue;
     }
 
-    const direction: 1 | -1 = row % 4 === 1 ? 1 : -1;
-    const rampedSpeed = DIFFICULTY.baseVehicleSpeed + row * DIFFICULTY.speedRampPerRow;
-    // Step increase per district: every district already crossed adds a
-    // flat multiplier on top of the gradual per-row ramp, so traffic gets
-    // a noticeable jump right after each district rather than only easing
-    // up smoothly.
-    const districtsPassed = DISTRICTS.filter((d) => d.row < row).length;
-    const districtMultiplier = 1 + districtsPassed * DIFFICULTY.speedBoostPerDistrict;
-    const speed = Math.min(rampedSpeed * districtMultiplier, DIFFICULTY.maxSpeed);
-    const colorIdx = Math.floor(seeded(row, 3) * COLORS.vehicleBody.length);
+    // ---------------- ROAD ----------------
+
+    const direction: 1 | -1 =
+      seeded(row, 10) > 0.5 ? 1 : -1;
+
+    const rampedSpeed =
+      DIFFICULTY.baseVehicleSpeed +
+      row * DIFFICULTY.speedRampPerRow;
+
+    const districtsPassed = DISTRICTS.filter(
+      (d) => d.row < row
+    ).length;
+
+    const districtMultiplier =
+      1 +
+      districtsPassed *
+        DIFFICULTY.speedBoostPerDistrict;
+
+    const speed = Math.min(
+      rampedSpeed * districtMultiplier,
+      DIFFICULTY.maxSpeed
+    );
+
+    const colorIdx = Math.floor(
+      seeded(row, 3) * COLORS.vehicleBody.length
+    );
 
     lanes.push({
       row,
       type: "road",
       direction,
       speed,
-      vehicleColor: COLORS.vehicleBody[colorIdx] ?? DEFAULT_VEHICLE_COLOR,
-      vehicleLength: 1, // single-tile cars only — easier to judge gaps
-      gapPx: DIFFICULTY.minGapPx + seeded(row, 5) * (DIFFICULTY.maxGapPx - DIFFICULTY.minGapPx),
+      vehicleColor:
+        COLORS.vehicleBody[colorIdx] ??
+        DEFAULT_VEHICLE_COLOR,
+      vehicleLength:
+  row > 32 && seeded(row, 7) > 0.72
+    ? 2
+    : 1,
+      gapPx:
+        DIFFICULTY.minGapPx +
+        seeded(row, 5) *
+          (DIFFICULTY.maxGapPx -
+            DIFFICULTY.minGapPx),
     });
+
+    consecutiveRoads++;
   }
 
   return lanes;

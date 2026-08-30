@@ -59,7 +59,7 @@ export const DISTRICTS: DistrictContent[] = [
       "Solving real-world problems through engineering",
       "Exploring new technologies and experimenting with ideas",
       "Combining engineering, design, and storytelling",
-      "Outside technology: gaming, psychology, history, astronomy, football, tennis, violin, poetry, and creative work",
+      "Outside technology: gaming, history, astronomy, tennis, violin, poetry, and creative work",
     ],
   },
   {
@@ -75,8 +75,6 @@ export const DISTRICTS: DistrictContent[] = [
       "Enjoys learning beyond the classroom — exploring technologies and concepts through independent projects",
     ],
     stats: [
-      { label: "Physics", value: "Core" },
-      { label: "Chemistry", value: "Core" },
       { label: "Maths", value: "Core" },
       { label: "Comp. Sci", value: "Core" },
     ],
@@ -90,8 +88,8 @@ export const DISTRICTS: DistrictContent[] = [
     summary:
       "Technical skills developed primarily through hands-on projects, experimentation, and building systems across software and hardware.",
     bullets: [
-      "Languages: Python, Java, HTML, CSS",
-      "Embedded & robotics: Arduino, ESP32, Cortex, embedded systems, sensors and motor control",
+      "Languages: Python, Java, HTML",
+      "Embedded & robotics: Arduino, ESP32, embedded systems",
       "Software: Web development, game development, Artificial Intelligence, Machine Learning, Computer Vision",
       "Creative: UI/UX design, graphic design, branding, content creation, video/reel editing, presentation design, visual communication",
     ],
@@ -186,11 +184,6 @@ export const DISTRICTS: DistrictContent[] = [
       "You've reached the final stop on CrossPath. But the journey doesn't end here — this is where the next chapter begins. Whether you're interested in a project, collaboration, AI or robotics, or simply want to connect, I'd be happy to hear from you.",
     bullets: [],
     links: [
-      {
-        label: "Email",
-        detail: "For collaborations, opportunities, and general conversations",
-        href: "mailto:plahamanveer@gmail.com",
-      },
       {
         label: "GitHub",
         detail: "Explore my code, projects, and technical work",

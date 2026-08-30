@@ -1,7 +1,43 @@
 import Phaser from "phaser";
 import { PLAYER, TILE } from "@/game/config";
+import { useGameStore, VehicleColorId } from "@/store/useGameStore";
 
 export type Direction = "up" | "down" | "left" | "right";
+const PLAYER_COLORS: Record<
+  VehicleColorId,
+  { body: number; stroke: number; visorStroke: number }
+> = {
+  cyan: {
+    body: 0x4cf3d6,
+    stroke: 0xa7fff1,
+    visorStroke: 0x7cf7e5,
+  },
+  orange: {
+    body: 0xff8a4c,
+    stroke: 0xffc29b,
+    visorStroke: 0xffb47c,
+  },
+  pink: {
+    body: 0xff4f7b,
+    stroke: 0xffa0b8,
+    visorStroke: 0xff7fa0,
+  },
+  purple: {
+    body: 0x8b7cff,
+    stroke: 0xc0b8ff,
+    visorStroke: 0xa99cff,
+  },
+  lime: {
+    body: 0x9eea5a,
+    stroke: 0xd5ff9c,
+    visorStroke: 0xbff57c,
+  },
+  gold: {
+    body: 0xf5c451,
+    stroke: 0xffe29a,
+    visorStroke: 0xffd36b,
+  },
+};
 
 /**
  * Builds a small pixel-avatar texture once (a body block + visor + shadow)
@@ -20,12 +56,48 @@ export class Player {
 
   constructor(private scene: Phaser.Scene, startCol: number) {
     this.gridCol = startCol;
+    const selectedColor = useGameStore.getState().selectedVehicleColor;
+    const colors = PLAYER_COLORS[selectedColor];
 
-    this.shadow = scene.add.ellipse(0, TILE * 0.28, TILE * 0.5, TILE * 0.18, 0x05070f, 0.45);
-    this.body = scene.add.rectangle(0, 0, TILE * 0.46, TILE * 0.58, 0x4cf3d6).setStrokeStyle(2, 0x0b1020);
-    this.visor = scene.add.rectangle(0, -TILE * 0.12, TILE * 0.3, TILE * 0.12, 0x0b1020, 0.85);
+    // Soft shadow beneath the player
+this.shadow = scene.add.ellipse(
+  0,
+  TILE * 0.28,
+  TILE * 0.52,
+  TILE * 0.16,
+  0x020617,
+  0.35
+);
 
-    this.sprite = scene.add.container(0, 0, [this.shadow, this.body, this.visor]);
+// Main player body
+this.body = scene.add.rectangle(
+  0,
+  0,
+  TILE * 0.5,
+  TILE * 0.62,
+  colors.body
+);
+
+this.body.setStrokeStyle(2, colors.stroke, 0.9);
+
+// Dark visor
+this.visor = scene.add.rectangle(
+  0,
+  -TILE * 0.13,
+  TILE * 0.34,
+  TILE * 0.16,
+  0x061a23,
+  0.95
+);
+
+this.visor.setStrokeStyle(1, colors.visorStroke, 0.7);
+
+// Build the complete player sprite
+this.sprite = scene.add.container(
+  0,
+  0,
+  [this.shadow, this.body, this.visor]
+);
     this.sprite.setSize(TILE, TILE);
     this.sprite.setDepth(50);
   }
@@ -46,13 +118,13 @@ export class Player {
     const rotation = dir === "left" ? -0.12 : dir === "right" ? 0.12 : 0;
 
     this.scene.tweens.add({
-      targets: this.body,
-      scaleX: 0.82,
-      scaleY: 1.18,
-      duration: PLAYER.hopDuration * 0.4,
-      yoyo: true,
-      ease: "Quad.easeOut",
-    });
+  targets: [this.body, this.visor],
+  scaleX: 0.86,
+  scaleY: 1.14,
+  duration: PLAYER.hopDuration * 0.35,
+  yoyo: true,
+  ease: "Quad.easeOut",
+  });
 
     this.scene.tweens.add({
       targets: this.sprite,
