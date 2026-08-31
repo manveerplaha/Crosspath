@@ -123,9 +123,9 @@ export function generateLanes(): LaneDef[] {
         COLORS.vehicleBody[colorIdx] ??
         DEFAULT_VEHICLE_COLOR,
       vehicleLength:
-  row > 32 && seeded(row, 7) > 0.72
-    ? 2
-    : 1,
+        row > 32 && seeded(row, 7) > 0.72
+          ? 2
+          : 1,
       gapPx:
         DIFFICULTY.minGapPx +
         seeded(row, 5) *

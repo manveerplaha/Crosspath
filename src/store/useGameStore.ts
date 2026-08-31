@@ -60,11 +60,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     })),
   toggleMuted: () => set({ muted: !get().muted }),
   selectVehicleColor: (color) =>
-  set((s) =>
-    s.ownedVehicleColors.includes(color)
-      ? { selectedVehicleColor: color }
-      : s
-  ),
+  set({ selectedVehicleColor: color }),
 
 buyVehicleColor: (color, cost) => {
   const state = get();
