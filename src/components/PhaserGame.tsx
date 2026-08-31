@@ -4,15 +4,18 @@ import { useEffect, useRef } from "react";
 import { useGameStore } from "@/store/useGameStore";
 import { COLS, LANE_ROWS_VISIBLE, TILE } from "@/game/config";
 
-// Deliberately NOT importing anything from "phaser" here, even as a type —
-// see the note in GameRoot.tsx. This is the minimal shape we actually use
-// off the game instance and the scene, so we never need Phaser's own types
-// in a file that (transitively) gets analyzed for SSR.
+// Deliberately NOT importing anything from "phaser" here.
+// Phaser is loaded dynamically inside the browser.
 interface MinimalPhaserGame {
   destroy: (removeCanvas: boolean) => void;
-  events: { once: (event: "ready", cb: () => void) => void };
-  scene: { getScene: (key: string) => unknown };
+  events: {
+    once: (event: "ready", cb: () => void) => void;
+  };
+  scene: {
+    getScene: (key: string) => unknown;
+  };
 }
+
 interface MinimalGameScene {
   resumeAfterDistrict: () => void;
 }
@@ -21,11 +24,13 @@ export default function PhaserGame() {
   const containerRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<MinimalPhaserGame | null>(null);
   const sceneRef = useRef<MinimalGameScene | null>(null);
+
   const phase = useGameStore((s) => s.phase);
   const muted = useGameStore((s) => s.muted);
 
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
+
     let disposed = false;
 
     async function boot() {
@@ -33,37 +38,55 @@ export default function PhaserGame() {
         import("phaser"),
         import("@/game/scenes/GameScene"),
       ]);
+
       if (disposed || !containerRef.current) return;
 
       const game = new Phaser.Game({
-        type: Phaser.AUTO, // WebGL when available, falls back to Canvas automatically
+        type: Phaser.AUTO,
         parent: containerRef.current,
         width: COLS * TILE,
         height: LANE_ROWS_VISIBLE * TILE,
         backgroundColor: "#0b1020",
+
         scale: {
           mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
+
         scene: [GameScene],
       }) as unknown as MinimalPhaserGame;
 
       gameRef.current = game;
+
       game.events.once("ready", () => {
-        sceneRef.current = game.scene.getScene("GameScene") as unknown as MinimalGameScene;
+        sceneRef.current =
+          game.scene.getScene("GameScene") as unknown as MinimalGameScene;
       });
     }
 
     void boot();
+
     return () => {
       disposed = true;
+
       gameRef.current?.destroy(true);
       gameRef.current = null;
+      sceneRef.current = null;
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // When the district modal closes (phase leaves "district"), hand control back.
+  /*
+   * IMPORTANT:
+   *
+   * When a district modal closes, we only resume the existing game.
+   *
+   * We DO NOT call restartFromStartRow().
+   *
+   * Otherwise, if the player originally selected District 5,
+   * closing District 6 would teleport them back to District 5.
+   */
   useEffect(() => {
     if (phase === "playing") {
       sceneRef.current?.resumeAfterDistrict();
@@ -72,14 +95,17 @@ export default function PhaserGame() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    import("@/game/systems/AudioManager").then(({ audioManager }) => audioManager.setMuted(muted));
+
+    import("@/game/systems/AudioManager").then(
+      ({ audioManager }) => audioManager.setMuted(muted)
+    );
   }, [muted]);
 
   return (
-  <div
-    ref={containerRef}
-    id="phaser-root"
-    className="mx-auto aspect-square h-[82vh] max-h-[820px] w-auto max-w-[95vw] overflow-hidden rounded-2xl border border-duskLight shadow-neon"
-  />
-);
+    <div
+      ref={containerRef}
+      id="phaser-root"
+      className="mx-auto aspect-square h-[82vh] max-h-[820px] w-auto max-w-[95vw] overflow-hidden rounded-2xl border border-duskLight shadow-neon"
+    />
+  );
 }

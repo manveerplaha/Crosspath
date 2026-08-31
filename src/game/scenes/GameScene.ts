@@ -48,18 +48,29 @@ export class GameScene extends Phaser.Scene {
     this.worldContainer.add(this.bg);
 
     // Pre-render a window of lanes around the start.
-    for (let r = 0; r <= 12; r++) this.spawnLane(r);
+    const store = useGameStore.getState();
+    const startRow = store.startRow ?? 0;
+
+    for (let r = Math.max(0, startRow - 2); r <= startRow + 12; r++) {
+    this.spawnLane(r);
+}
 
     this.player = new Player(this, Math.floor(COLS / 2));
-    this.player.setPosition(colToX(this.player.gridCol), rowToY(0));
+    this.player.gridRow = startRow;
+    this.player.setPosition(
+    colToX(this.player.gridCol),
+    rowToY(startRow)
+    );
     this.worldContainer.add(this.player.sprite);
 
     this.cameraTargetY = 0;
     this.setupInput();
 
-    const store = useGameStore.getState();
     store.setPhase("playing");
-    store.setCheckpoint(0);
+
+    if (store.startRow !== null) {
+    store.setCheckpoint(store.startRow);
+    }
     audioManager.startAmbient();
 
     this.events.on("shutdown", () => audioManager.stopAmbient());
@@ -180,6 +191,31 @@ export class GameScene extends Phaser.Scene {
     this.ensureLanesAround(this.player.gridRow);
     this.cameraTargetY = this.player.gridRow * TILE;
   }
+
+  restartFromStartRow() {
+  const store = useGameStore.getState();
+  const row = store.startRow;
+
+  if (row === null) return;
+
+  this.inputLocked = true;
+
+  this.ensureLanesAround(row);
+
+  this.player.gridRow = row;
+  this.player.gridCol = Math.floor(COLS / 2);
+
+  this.player.setPosition(
+    colToX(this.player.gridCol),
+    rowToY(row)
+  );
+
+  this.cameraTargetY = row * TILE;
+
+  store.setCheckpoint(row);
+
+  this.inputLocked = false;
+}
 
   // ------------------------------------------------------------ lane mgmt
 

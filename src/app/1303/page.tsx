@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useGameStore } from "@/store/useGameStore";
 
 type Signal = {
   id: string;
@@ -71,6 +72,7 @@ const favourites = [
 
 export default function SignalRoomPage() {
   const [activeId, setActiveId] = useState("now");
+  const setPhase = useGameStore((s) => s.setPhase);
   const activeSignal = signals.find((signal) => signal.id === activeId) ?? signals[0]!;
 
   return (
@@ -104,7 +106,10 @@ export default function SignalRoomPage() {
                   type="button"
                   aria-label={`Open ${signal.eyebrow.toLowerCase()} signal`}
                   aria-pressed={isActive}
-                  onClick={() => setActiveId(signal.id)}
+                  onClick={() => {
+                  setPhase("playing");
+                  window.dispatchEvent(new Event("crosspath-resume"));
+                  }}
                   className={`absolute ${signal.position} group z-10 grid h-12 w-12 place-items-center rounded-full border transition duration-300 hover:scale-110 focus-visible:scale-110 sm:h-16 sm:w-16 ${
                     isActive ? colorClasses[signal.color] : "border-mistDim/60 bg-void text-mistDim hover:border-mist hover:text-mist"
                   }`}

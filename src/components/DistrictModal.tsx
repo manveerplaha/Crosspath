@@ -9,11 +9,13 @@ const accentText: Record<string, string> = {
   amber: "text-amber",
   magenta: "text-magenta",
 };
+
 const accentBorder: Record<string, string> = {
   neon: "border-neon shadow-neon",
   amber: "border-amber shadow-amber",
   magenta: "border-magenta",
 };
+
 const accentSolid: Record<string, string> = {
   neon: "bg-neon shadow-neon",
   amber: "bg-amber shadow-amber",
@@ -23,7 +25,18 @@ const accentSolid: Record<string, string> = {
 export default function DistrictModal() {
   const activeId = useGameStore((s) => s.activeDistrict);
   const closeDistrict = useGameStore((s) => s.closeDistrict);
+  const startRow = useGameStore((s) => s.startRow);
+  const viewingPortfolio = useGameStore((s) => s.viewingPortfolio);
+
   const district = activeId ? districtById(activeId) : null;
+
+  const handleBackToCrossing = () => {
+    closeDistrict();
+
+    if (viewingPortfolio && startRow !== null) {
+      window.dispatchEvent(new Event("crosspath-start-at-row"));
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -43,8 +56,12 @@ export default function DistrictModal() {
             initial={{ y: 60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
-            transition={{ type: "spring", damping: 26, stiffness: 260 }}
-            className={`relative w-full max-w-lg rounded-t-3xl border-t sm:rounded-3xl sm:border bg-dusk p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:p-8 ${accentBorder[district.accent]}`}
+            transition={{
+              type: "spring",
+              damping: 26,
+              stiffness: 260,
+            }}
+            className={`relative w-full max-w-lg rounded-t-3xl border-t bg-dusk p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:rounded-3xl sm:border sm:p-8 ${accentBorder[district.accent]}`}
           >
             <button
               onClick={closeDistrict}
@@ -54,16 +71,36 @@ export default function DistrictModal() {
               ✕
             </button>
 
-            <p className={`font-display text-[10px] tracking-[0.25em] ${accentText[district.accent]}`}>{district.eyebrow}</p>
-            <h2 className="mt-2 font-display text-xl text-mist sm:text-2xl">{district.title}</h2>
-            <p className="mt-4 font-body text-sm leading-relaxed text-mistDim sm:text-base">{district.summary}</p>
+            <p
+              className={`font-display text-[10px] tracking-[0.25em] ${accentText[district.accent]}`}
+            >
+              {district.eyebrow}
+            </p>
+
+            <h2 className="mt-2 font-display text-xl text-mist sm:text-2xl">
+              {district.title}
+            </h2>
+
+            <p className="mt-4 font-body text-sm leading-relaxed text-mistDim sm:text-base">
+              {district.summary}
+            </p>
 
             {district.stats && (
               <div className="mt-5 grid grid-cols-3 gap-2">
                 {district.stats.map((s) => (
-                  <div key={s.label} className="rounded-xl border border-duskLight bg-void/60 p-3 text-center">
-                    <p className={`font-display text-sm ${accentText[district.accent]}`}>{s.value}</p>
-                    <p className="mt-1 text-[10px] uppercase tracking-wide text-mistDim">{s.label}</p>
+                  <div
+                    key={s.label}
+                    className="rounded-xl border border-duskLight bg-void/60 p-3 text-center"
+                  >
+                    <p
+                      className={`font-display text-sm ${accentText[district.accent]}`}
+                    >
+                      {s.value}
+                    </p>
+
+                    <p className="mt-1 text-[10px] uppercase tracking-wide text-mistDim">
+                      {s.label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -78,7 +115,10 @@ export default function DistrictModal() {
                   transition={{ delay: 0.06 * i }}
                   className="flex gap-2.5 font-body text-sm text-mist"
                 >
-                  <span className={accentText[district.accent]}>▹</span>
+                  <span className={accentText[district.accent]}>
+                    ▹
+                  </span>
+
                   <span>{b}</span>
                 </motion.li>
               ))}
@@ -89,19 +129,38 @@ export default function DistrictModal() {
                 {district.links.map((link, i) => {
                   const row = (
                     <>
-                      <span className={`font-display text-xs ${accentText[district.accent]}`}>▷ {link.label}</span>
-                      <span className="mt-0.5 block font-body text-xs text-mistDim">{link.detail}</span>
+                      <span
+                        className={`font-display text-xs ${accentText[district.accent]}`}
+                      >
+                        ▷ {link.label}
+                      </span>
+
+                      <span className="mt-0.5 block font-body text-xs text-mistDim">
+                        {link.detail}
+                      </span>
                     </>
                   );
+
                   const rowClass =
                     "block rounded-xl border border-duskLight bg-void/60 px-4 py-3 transition hover:border-mist";
+
                   return link.href ? (
                     <motion.a
                       key={link.label}
                       href={link.href}
                       download={link.download}
-                      target={!link.download && !link.href.startsWith("mailto:") ? "_blank" : undefined}
-                      rel={!link.download && !link.href.startsWith("mailto:") ? "noopener noreferrer" : undefined}
+                      target={
+                        !link.download &&
+                        !link.href.startsWith("mailto:")
+                          ? "_blank"
+                          : undefined
+                      }
+                      rel={
+                        !link.download &&
+                        !link.href.startsWith("mailto:")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.06 * i }}
@@ -134,10 +193,14 @@ export default function DistrictModal() {
             )}
 
             <motion.button
-              onClick={closeDistrict}
+              onClick={handleBackToCrossing}
               whileTap={{ scale: 0.93 }}
               whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 15,
+              }}
               className={`mt-6 block w-full rounded-full py-3.5 font-display text-xs font-bold tracking-wide text-void shadow-lg sm:hidden ${accentSolid[district.accent]}`}
             >
               ← BACK TO THE CROSSING

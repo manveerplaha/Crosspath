@@ -201,7 +201,16 @@ export default function LoadingScreen() {
               </div>
             </div>
 
+              <button
+                type="button"
+                onClick={() => useGameStore.getState().setViewingPortfolio(true)}
+                className="font-display text-[10px] tracking-[0.18em] text-mistDim underline decoration-duskLight underline-offset-4 transition hover:text-neon hover:decoration-neon"
+                >
+                VIEW ALL DISTRICTS
+              </button>
+
             <motion.button
+
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setPhase("playing")}
